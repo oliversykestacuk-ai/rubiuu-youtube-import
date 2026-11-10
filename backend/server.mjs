@@ -1,0 +1,4 @@
+import http from 'node:http';
+import {handleImportApi,downloaderReady} from './import-service.mjs';
+if(process.env.NODE_ENV==='production'&&!process.env.IMPORT_SERVICE_TOKEN)throw Error('Set IMPORT_SERVICE_TOKEN in the hosting dashboard before starting.');
+http.createServer(async(req,res)=>{try{if(req.method==='GET'&&req.url==='/health'){res.writeHead(await downloaderReady()?200:503,{'Content-Type':'application/json'}).end(JSON.stringify({ready:await downloaderReady()}));return;}if(!await handleImportApi(req,res)){res.writeHead(404).end('Not found');}}catch{if(!res.headersSent)res.writeHead(500,{'Content-Type':'application/json'}).end(JSON.stringify({error:'Layanan sedang tidak tersedia.'}));}}).listen(Number(process.env.PORT||8788),process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1',()=>console.log('RUBIUU import service ready'));

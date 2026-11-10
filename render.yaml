@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: rubiuu-youtube-import
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: IMPORT_SERVICE_TOKEN
+        generateValue: true
